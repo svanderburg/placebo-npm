@@ -1,0 +1,19 @@
+{
+  "name": "placebo-npm",
+  "version": "0.0.1",
+  "author": {
+    "name": "Sander van der Burg",
+    "email": "svanderburg@gmail.com"
+  },
+  "bin": {
+    "placebo-npm": "bin/placebo-npm.js"
+  },
+  "dependencies": {
+    "slasp": "0.0.4",
+    "optparse": "1.0.x"
+  },
+  "bundledDependencies": [
+    "slasp",
+    "optparse"
+  ]
+}
