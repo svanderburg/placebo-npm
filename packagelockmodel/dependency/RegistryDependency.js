@@ -1,3 +1,4 @@
+var semver = require('semver');
 var inherit = require('./inherit.js').inherit;
 var Dependency = require('./Dependency.js').Dependency;
 
@@ -11,7 +12,9 @@ function RegistryDependency(dependencyName, config) {
 inherit(Dependency, RegistryDependency);
 
 RegistryDependency.check = function(config) {
-    return config.version.match(/^[0-9]+\.[0-9]+\.[0-9]+$/);
+    var parsedVersionSpec = semver.validRange(config.version, true);
+
+    return (parsedVersionSpec !== null);
 };
 
 RegistryDependency.prototype.accept = function(visitor, callback) {
