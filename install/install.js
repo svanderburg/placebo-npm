@@ -1,11 +1,11 @@
-var PackageLock = require('../packagelockmodel/PackageLock.js').PackageLock;
-var Placebo = require('./Placebo.js').Placebo;
-var DependencyInstallVisitor = require('./visitor/DependencyInstallVisitor.js').DependencyInstallVisitor;
-var ChildDependenciesVisitor = require('./visitor/ChildDependenciesVisitor.js').ChildDependenciesVisitor;
+const PackageLock = require('../packagelockmodel/PackageLock.js').PackageLock;
+const Placebo = require('./Placebo.js').Placebo;
+const DependencyInstallVisitor = require('./visitor/DependencyInstallVisitor.js').DependencyInstallVisitor;
+const ChildDependenciesVisitor = require('./visitor/ChildDependenciesVisitor.js').ChildDependenciesVisitor;
 
-exports.installDependenciesFromPlacebo = function(packagePlaceboFile, packageLockFile, production, callback) {
-    var placebo = new Placebo(packagePlaceboFile);
-    var packageLock = new PackageLock(packageLockFile);
+exports.installDependenciesFromPlacebo = async function(packagePlaceboFile, packageLockFile, production) {
+    const placebo = new Placebo(packagePlaceboFile);
+    const packageLock = new PackageLock(packageLockFile);
 
-    packageLock.visitAllDependencies(production, new DependencyInstallVisitor(placebo), new ChildDependenciesVisitor(), callback);
+    return packageLock.visitAllDependencies(production, new DependencyInstallVisitor(placebo), new ChildDependenciesVisitor());
 };

@@ -1,24 +1,21 @@
-var semver = require('semver');
-var inherit = require('./inherit.js').inherit;
-var Dependency = require('./Dependency.js').Dependency;
+const semver = require('semver');
+const Dependency = require('./Dependency.js').Dependency;
 
-function RegistryDependency(dependencyName, config) {
-    Dependency.call(this, dependencyName, config);
-    this.integrity = config.integrity;
-    this.resolved = config.resolved;
+class RegistryDependency extends Dependency {
+    constructor(dependencyName, config) {
+        super(dependencyName, config);
+        this.integrity = config.integrity;
+        this.resolved = config.resolved;
+    }
+
+    static check(config) {
+        const parsedVersionSpec = semver.validRange(config.version, true);
+        return parsedVersionSpec !== null;
+    }
+
+    async accept(visitor) {
+        return visitor.visitRegistryDependency(this);
+    }
 }
-
-/* RegistryDependency inherits from Dependency */
-inherit(Dependency, RegistryDependency);
-
-RegistryDependency.check = function(config) {
-    var parsedVersionSpec = semver.validRange(config.version, true);
-
-    return (parsedVersionSpec !== null);
-};
-
-RegistryDependency.prototype.accept = function(visitor, callback) {
-    visitor.visitRegistryDependency(this, callback);
-};
 
 exports.RegistryDependency = RegistryDependency;

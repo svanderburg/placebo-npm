@@ -1,24 +1,22 @@
-var fileoperations = require('../fileoperations.js');
-var DependencyInstaller = require('./DependencyInstaller.js').DependencyInstaller;
-var inherit = require('../../packagelockmodel/dependency/inherit.js').inherit;
+const fileoperations = require('../fileoperations.js');
+const DependencyInstaller = require('./DependencyInstaller.js').DependencyInstaller;
 
-function GitDependencyInstaller(dependency, placebo) {
-    DependencyInstaller.call(this, dependency, placebo);
+class GitDependencyInstaller extends DependencyInstaller {
+    constructor(dependency, placebo) {
+        super(dependency, placebo);
+    }
+
+    installDependency() {
+        const directory = this.placebo.findByVersion(this.dependency.version);
+        console.log("Install Git dependency: " + this.dependency.dependencyName + " with copy from: " + directory);
+        fileoperations.copyDirectory(directory, this.dependency.dependencyName);
+    }
+
+    adjustDependencyPackageJSON(packageObj) {
+        packageObj._from = this.dependency.from;
+        packageObj._integrity = "";
+        packageObj._resolved = this.dependency.version;
+    }
 }
-
-/* GitDependencyInstaller inherits from DependencyInstaller */
-inherit(DependencyInstaller, GitDependencyInstaller);
-
-GitDependencyInstaller.prototype.installDependency = function() {
-    var directory = this.placebo.findByVersion(this.dependency.version);
-    console.log("Install Git dependency: " + this.dependency.dependencyName + " with copy from: " + directory);
-    fileoperations.copyDirectory(directory, this.dependency.dependencyName);
-};
-
-GitDependencyInstaller.prototype.adjustDependencyPackageJSON = function(packageObj) {
-    packageObj._from = this.dependency.from;
-    packageObj._integrity = "";
-    packageObj._resolved = this.dependency.version;
-};
 
 exports.GitDependencyInstaller = GitDependencyInstaller;

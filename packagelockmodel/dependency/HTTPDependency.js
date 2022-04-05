@@ -1,20 +1,18 @@
-var inherit = require('./inherit.js').inherit;
-var Dependency = require('./Dependency.js').Dependency;
+const Dependency = require('./Dependency.js').Dependency;
 
-function HTTPDependency(directoryName, config) {
-    Dependency.call(this, directoryName, config);
-    this.integrity = config.integrity;
+class HTTPDependency extends Dependency {
+    constructor(directoryName, config) {
+        super(directoryName, config);
+        this.integrity = config.integrity;
+    }
+
+    static check(config) {
+        return config.version.startsWith("http:") || config.version.startsWith("https:");
+    }
+
+    async accept(visitor) {
+        return visitor.visitHTTPDependency(this);
+    }
 }
-
-/* HTTPDependency inherits from Dependency */
-inherit(Dependency, HTTPDependency);
-
-HTTPDependency.check = function(config) {
-    return config.version.startsWith("http:") || config.version.startsWith("https:");
-};
-
-HTTPDependency.prototype.accept = function(visitor, callback) {
-    visitor.visitHTTPDependency(this, callback);
-};
 
 exports.HTTPDependency = HTTPDependency;

@@ -9,12 +9,10 @@
     "placebo-npm": "bin/placebo-npm.js"
   },
   "dependencies": {
-    "slasp": "0.0.4",
     "optparse": "1.0.x",
     "semver": "7.3.x"
   },
   "bundledDependencies": [
-    "slasp",
     "optparse",
     "semver"
   ]

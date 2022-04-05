@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 
-var optparse = require('optparse');
-var install = require('../install/install.js');
+const optparse = require('optparse');
+const install = require('../install/install.js');
 
 /* Define command-line options */
 
-var switches = [
+const switches = [
     ['-h', '--help', 'Shows help sections'],
     ['-v', '--version', 'Shows version'],
     ['-l', '--lock FILE', 'Path to the package-lock.json file that pinpoints the variants of all dependencies (defaults to: package-lock.json)'],
@@ -13,16 +13,16 @@ var switches = [
     ['--production', 'Deploy in production mode, in which development dependencies on top level are not installed']
 ];
 
-var parser = new optparse.OptionParser(switches);
+const parser = new optparse.OptionParser(switches);
 
 /* Set some variables and their default values */
 
-var help = false;
-var version = false;
+let help = false;
+let version = false;
 
-var packageLockFile = "package-lock.json";
-var packagePlaceboFile = "package-placebo.json";
-var production = false;
+let packageLockFile = "package-lock.json";
+let packagePlaceboFile = "package-placebo.json";
+let production = false;
 
 /* Define process rules for option parameters */
 
@@ -59,7 +59,7 @@ parser.parse(process.argv);
 
 if(help) {
     function displayTab(len, maxlen) {
-        for(var i = 0; i < maxlen - len; i++) {
+        for(const i = 0; i < maxlen - len; i++) {
             process.stdout.write(" ");
         }
     }
@@ -72,11 +72,11 @@ if(help) {
 
     process.stdout.write("Options:\n");
 
-    var maxlen = 30;
+    const maxlen = 30;
 
-    for(var i = 0; i < switches.length; i++) {
+    for(const i = 0; i < switches.length; i++) {
 
-        var currentSwitch = switches[i];
+        const currentSwitch = switches[i];
 
         process.stdout.write("  ");
 
@@ -99,7 +99,7 @@ if(help) {
 /* Display the version, if it has been requested */
 
 if(version) {
-    var version = JSON.parse(fs.readFileSync(path.join(__dirname, "package.json"))).version;
+    const version = JSON.parse(fs.readFileSync(path.join(__dirname, "package.json"))).version;
 
     process.stdout.write("placebo-npm " + version + "\n");
     process.exit(0);
@@ -107,9 +107,11 @@ if(version) {
 
 /* Execute the operations */
 
-install.installDependenciesFromPlacebo(packagePlaceboFile, packageLockFile, production, function(err) {
-    if(err) {
-        process.stderr.write(err + "\n");
+(async function() {
+    try {
+        await install.installDependenciesFromPlacebo(packagePlaceboFile, packageLockFile, production);
+    } catch(err) {
+        process.stderr.write(err.stack + "\n");
         process.exit(1);
     }
-});
+})();

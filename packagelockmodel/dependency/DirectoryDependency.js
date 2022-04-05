@@ -1,19 +1,17 @@
-var inherit = require('./inherit.js').inherit;
-var Dependency = require('./Dependency.js').Dependency;
+const Dependency = require('./Dependency.js').Dependency;
 
-function DirectoryDependency(dependencyName, config) {
-    Dependency.call(this, dependencyName, config);
+class DirectoryDependency extends Dependency {
+    constructor(dependencyName, config) {
+        super(dependencyName, config);
+    }
+
+    static check(config) {
+        return config.version.startsWith("file:") && !config.integrity;
+    }
+
+    async accept(visitor) {
+        return visitor.visitDirectoryDependency(this);
+    }
 }
-
-/* DirectoryDependency inherits from Dependency */
-inherit(Dependency, DirectoryDependency);
-
-DirectoryDependency.check = function(config) {
-    return config.version.startsWith("file:") && !config.integrity;
-};
-
-DirectoryDependency.prototype.accept = function(visitor, callback) {
-    visitor.visitDirectoryDependency(this, callback);
-};
 
 exports.DirectoryDependency = DirectoryDependency;

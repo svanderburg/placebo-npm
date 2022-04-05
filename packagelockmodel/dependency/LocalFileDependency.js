@@ -1,20 +1,18 @@
-var inherit = require('./inherit.js').inherit;
-var Dependency = require('./Dependency.js').Dependency;
+const Dependency = require('./Dependency.js').Dependency;
 
-function LocalFileDependency(dependencyName, config) {
-    Dependency.call(this, dependencyName, config);
-    this.integrity = config.integrity;
+class LocalFileDependency extends Dependency {
+    constructor(dependencyName, config) {
+        super(dependencyName, config);
+        this.integrity = config.integrity;
+    }
+
+    static check(config) {
+        return config.version.startsWith("file:") && config.integrity;
+    }
+
+    async accept(visitor) {
+        return visitor.visitLocalFileDependency(this);
+    }
 }
-
-/* LocalFileDependency inherits from Dependency */
-inherit(Dependency, LocalFileDependency);
-
-LocalFileDependency.check = function(config) {
-    return config.version.startsWith("file:") && config.integrity;
-};
-
-LocalFileDependency.prototype.accept = function(visitor, callback) {
-    visitor.visitLocalFileDependency(this, callback);
-};
 
 exports.LocalFileDependency = LocalFileDependency;
