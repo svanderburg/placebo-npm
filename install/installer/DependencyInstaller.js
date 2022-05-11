@@ -14,7 +14,7 @@ class DependencyInstaller {
     adjustProjectPackageJSON(packageObj) {
     }
 
-    adjustDependencyPackageJSON = function(packageObj) {
+    adjustDependencyPackageJSON(packageObj) {
     }
 
     install() {
